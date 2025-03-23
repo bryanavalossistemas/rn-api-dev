@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
 import * as sharp from 'sharp';
 import { unlink } from 'fs/promises';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductsService {
@@ -17,6 +18,7 @@ export class ProductsService {
     private readonly productsRepository: Repository<Product>,
 
     private readonly productImagesService: ProductImagesService,
+    private readonly configService: ConfigService,
   ) {}
 
   async save(product: DeepPartial<Product>) {
@@ -35,7 +37,7 @@ export class ProductsService {
 
         await this.productImagesService.save({
           product: { id: product.id },
-          path: `http://localhost:4000/uploads/${fileName}`,
+          path: this.configService.get('API_URL') + `/${fileName}`,
         });
       }
     }
@@ -94,7 +96,7 @@ export class ProductsService {
 
         await this.productImagesService.save({
           product: { id: product.id },
-          path: `http://localhost:4000/uploads/${fileName}`,
+          path: this.configService.get('API_URL') + `/${fileName}`,
         });
       }
     }
