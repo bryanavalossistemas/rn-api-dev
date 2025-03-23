@@ -25,7 +25,7 @@ import { DocumentDetailsModule } from './document-details/document-details.modul
       useFactory: () => ({
         type: 'better-sqlite3',
         database: 'database.sqlite',
-        synchronize: true,
+        // synchronize: true,
         autoLoadEntities: true,
       }),
       inject: [ConfigService],

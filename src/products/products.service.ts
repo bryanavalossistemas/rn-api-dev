@@ -7,7 +7,7 @@ import { Between, DeepPartial, FindManyOptions, FindOneOptions, Repository } fro
 import { ProductImagesService } from '../product-images/product-images.service';
 import { v4 as uuidv4 } from 'uuid';
 import { join } from 'path';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 import { unlink } from 'fs/promises';
 
 @Injectable()
