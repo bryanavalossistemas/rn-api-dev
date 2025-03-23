@@ -37,7 +37,7 @@ export class ProductsService {
 
         await this.productImagesService.save({
           product: { id: product.id },
-          path: this.configService.get('API_URL') + `/${fileName}`,
+          path: this.configService.get('API_URL') + `/uploads/${fileName}`,
         });
       }
     }
@@ -96,7 +96,7 @@ export class ProductsService {
 
         await this.productImagesService.save({
           product: { id: product.id },
-          path: this.configService.get('API_URL') + `/${fileName}`,
+          path: this.configService.get('API_URL') + `/uploads/${fileName}`,
         });
       }
     }
