@@ -1,8 +1,8 @@
+import { AuthProvidersModule } from '@/auth/modules/auth-providers/auth-providers.module';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { UsersService } from '@/auth/modules/users/users.service';
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { AuthProvidersModule } from '../auth-providers/auth-providers.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), AuthProvidersModule],

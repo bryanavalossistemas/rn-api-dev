@@ -1,5 +1,5 @@
+import { User } from '@/auth/modules/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, Relation } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Profile {
@@ -7,12 +7,15 @@ export class Profile {
   id: number;
 
   @Column({ type: 'varchar', nullable: true })
-  name: string | undefined;
+  name: string | null;
 
   @Column({ type: 'varchar', nullable: true })
-  picture: string | undefined;
+  picture: string | null;
 
-  @OneToOne(() => User, (user) => user.profile)
+  @Column({ type: 'integer' })
+  userId: number;
+
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
   @JoinColumn()
-  user: Relation<User>;
+  user: User;
 }

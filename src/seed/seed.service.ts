@@ -1,34 +1,34 @@
+import { Brand } from '@/admin/inventory/brands/entities/brand.entity';
+import { Category } from '@/admin/inventory/categories/entities/category.entity';
+import { Product } from '@/admin/inventory/products/entities/product.entity';
+import { Customer } from '@/admin/transactions/customers/entities/customer.entity';
+import { Supplier } from '@/admin/transactions/suppliers/entities/supplier.entity';
+import { Profile } from '@/auth/modules/profiles/entities/profile.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { brandsData, categoriesData, customersData, productsData, profilesData, suppliersData, usersData } from '@/seed/data';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Role } from '../auth/modules/roles/entities/role.entity';
-import { User } from '../auth/modules/users/entities/user.entity';
-import { Category } from '../categories/entities/category.entity';
-import { Brand } from '../brands/entities/brand.entity';
-import { brandsData, categoriesData, documentTypesData, productsData, rolesData, suppliersData, usersData } from './data';
-import { Supplier } from '../suppliers/entities/supplier.entity';
-import { Product } from '../products/entities/product.entity';
-import { DocumentType } from '../document-types/entities/document-type.entity';
 
 @Injectable()
 export class SeedService {
   constructor(
     private dataSource: DataSource,
 
-    @InjectRepository(Role)
-    private readonly rolesRepository: Repository<Role>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Profile)
+    private readonly profilesRepository: Repository<Profile>,
     @InjectRepository(Category)
     private readonly categoriesRepository: Repository<Category>,
     @InjectRepository(Brand)
     private readonly brandsRepository: Repository<Brand>,
     @InjectRepository(Supplier)
     private readonly suppliersRepository: Repository<Supplier>,
+    @InjectRepository(Customer)
+    private readonly customersRepository: Repository<Customer>,
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
-    @InjectRepository(DocumentType)
-    private readonly documentTypesRepository: Repository<DocumentType>,
   ) {}
 
   async onModuleInit() {
@@ -38,9 +38,9 @@ export class SeedService {
   }
 
   async seed() {
-    await this.rolesRepository.save(rolesData);
-
     await this.usersRepository.save(usersData);
+
+    await this.profilesRepository.save(profilesData);
 
     await this.categoriesRepository.save(categoriesData);
 
@@ -48,9 +48,9 @@ export class SeedService {
 
     await this.suppliersRepository.save(suppliersData);
 
-    await this.productsRepository.save(productsData);
+    await this.customersRepository.save(customersData);
 
-    await this.documentTypesRepository.save(documentTypesData);
+    await this.productsRepository.save(productsData);
 
     console.log('Seed completado');
   }

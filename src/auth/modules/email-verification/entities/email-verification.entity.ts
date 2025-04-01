@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
 
 @Entity()
 export class EmailVerification {
@@ -12,6 +12,10 @@ export class EmailVerification {
   @Column({ type: 'datetime' })
   expiresAt: Date;
 
+  @Column({ type: 'integer' })
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.emailVerifications)
-  user: Relation<User>;
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

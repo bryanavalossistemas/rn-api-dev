@@ -1,20 +1,22 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '@auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/guards/roles.guard';
-import { AuthGuard } from './auth/guards/auth.guard';
-import { CategoriesModule } from './categories/categories.module';
-import { BrandsModule } from './brands/brands.module';
-import { ProductsModule } from './products/products.module';
-import { ProductImagesModule } from './product-images/product-images.module';
-import { SuppliersModule } from './suppliers/suppliers.module';
-import { InventoryMovementsModule } from './inventory-movements/inventory-movements.module';
-import { PurchasesModule } from './purchases/purchases.module';
-import { DocumentsModule } from './documents/documents.module';
-import { DocumentTypesModule } from './document-types/document-types.module';
-import { DocumentDetailsModule } from './document-details/document-details.module';
+import { RolesGuard } from '@auth/guards/roles.guard';
+import { AuthGuard } from '@auth/guards/auth.guard';
+import { CategoriesModule } from '@admin/inventory/categories/categories.module';
+import { BrandsModule } from '@/admin/inventory/brands/brands.module';
+import { ProductsModule } from '@admin/inventory/products/products.module';
+import { ProductImagesModule } from '@admin/inventory/product-images/product-images.module';
+import { SuppliersModule } from '@admin/transactions/suppliers/suppliers.module';
+import { InventoryMovementsModule } from '@admin/inventory/inventory-movements/inventory-movements.module';
+import { PurchasesModule } from '@admin/transactions/purchases/purchases.module';
+import { SalesModule } from '@admin/transactions/sales/sales.module';
+import { CustomersModule } from '@admin/transactions/customers/customers.module';
+import { typeOrmConfig } from '@/config/typeorm.config';
+import { PurchaseDetailsModule } from '@/admin/transactions/purchase-details/purchase-details.module';
+import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-details.module';
 
 @Module({
   imports: [
@@ -22,12 +24,7 @@ import { DocumentDetailsModule } from './document-details/document-details.modul
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'better-sqlite3',
-        database: 'database.sqlite',
-        // synchronize: true,
-        autoLoadEntities: true,
-      }),
+      useFactory: typeOrmConfig,
       inject: [ConfigService],
     }),
 
@@ -39,19 +36,20 @@ import { DocumentDetailsModule } from './document-details/document-details.modul
     SuppliersModule,
     InventoryMovementsModule,
     PurchasesModule,
-    DocumentsModule,
-    DocumentTypesModule,
-    DocumentDetailsModule,
+    SalesModule,
+    CustomersModule,
+    PurchaseDetailsModule,
+    SaleDetailsModule,
   ],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule {}

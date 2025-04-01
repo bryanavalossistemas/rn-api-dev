@@ -1,37 +1,36 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from './modules/users/users.service';
+import { BadRequestException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterDto } from './dto/register.dto';
-import { User } from './modules/users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login.dto';
-import { EmailVerificationService } from './modules/email-verification/email-verification.service';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
-import { PasswordResetTokensService } from './modules/password-reset-tokens/password-reset-tokens.service';
+import { UsersService } from '@/auth/modules/users/users.service';
+import { EmailVerificationService } from '@/auth/modules/email-verification/email-verification.service';
+import { PasswordResetTokensService } from '@/auth/modules/password-reset-tokens/password-reset-tokens.service';
+import { RegisterDto } from '@/auth/dto/register.dto';
+import { LoginDto } from '@/auth/dto/login.dto';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { AuthProvidersService } from '@/auth/modules/auth-providers/auth-providers.service';
+import { ProfilesService } from '@/auth/modules/profiles/profiles.service';
 
 @Injectable()
 export class AuthService {
-  private googleClient: OAuth2Client;
-
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly emailVerificationsService: EmailVerificationService,
     private readonly passwordResetTokensService: PasswordResetTokensService,
+    private readonly authProvidersService: AuthProvidersService,
+    private readonly profilesService: ProfilesService,
     private readonly configService: ConfigService,
-  ) {
-    this.googleClient = new OAuth2Client(
-      this.configService.get('GOOGLE_CLIENT_ID'),
-      this.configService.get('GOOGLE_CLIENT_SECRET'),
-      this.configService.get('GOOGLE_REDIRECT_URI'),
-    );
-  }
+
+    @Inject('GOOGLE_OAUTH_CLIENT')
+    private readonly googleClient: OAuth2Client,
+  ) {}
 
   async register(registerDto: RegisterDto) {
     const { email, password } = registerDto;
 
-    const existingUser = await this.usersService.findOneBy({ email });
+    const existingUser = await this.usersService.findOneBy({ email: email });
 
     if (existingUser) {
       if (!existingUser.password) {
@@ -39,20 +38,21 @@ export class AuthService {
       }
 
       if (!existingUser.isEmailVerified) {
-        await this.emailVerificationsService.sendVerificationEmail(email, existingUser);
+        await this.emailVerificationsService.sendVerificationEmail(email, existingUser.id);
       } else {
         await this.emailVerificationsService.sendIsAlreadyVerifiedEmail(email);
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.usersService.save({
-        email,
+        email: email,
         password: hashedPassword,
-        roles: [{ id: 2 }],
-        authProviders: [{ provider: 'local', providerId: email }],
+        role: 'user',
       });
 
-      await this.emailVerificationsService.sendVerificationEmail(email, user);
+      await this.authProvidersService.save({ provider: 'local', providerId: email, user: { id: user.id } });
+
+      await this.emailVerificationsService.sendVerificationEmail(email, user.id);
     }
 
     return {
@@ -63,10 +63,7 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    const user = await this.usersService.findOne({
-      where: { email },
-      relations: { roles: true },
-    });
+    const user = await this.usersService.findOneBy({ email: email });
     if (!user || !user.isEmailVerified) {
       throw new UnauthorizedException();
     }
@@ -85,22 +82,22 @@ export class AuthService {
     if (!email) throw new UnauthorizedException();
 
     let user = await this.usersService.findOne({
-      where: { email },
-      relations: { authProviders: true, roles: true },
+      where: { email: email },
+      relations: { authProviders: true },
     });
 
     if (user) {
       const haveGoogleProvider = user.authProviders.some((authProvider) => authProvider.provider === 'google' && authProvider.providerId === sub);
       if (!haveGoogleProvider) {
-        await this.usersService.addProvider('google', sub, user);
+        await this.authProvidersService.save({ provider: 'google', providerId: sub, user: { id: user.id } });
       }
     } else {
       user = await this.usersService.save({
         email,
-        profile: { name, picture },
-        authProviders: [{ provider: 'google', providerId: sub }],
-        roles: [{ id: 2 }],
+        role: 'user',
       });
+      await this.authProvidersService.save({ provider: 'google', providerId: sub, user: { id: user.id } });
+      await this.profilesService.save({ name: name, picture: picture, userId: user.id });
     }
 
     return this.generateAccessToken(user);
@@ -128,11 +125,7 @@ export class AuthService {
       relations: { user: true },
     });
 
-    if (!verificationToken || verificationToken.user.isEmailVerified) {
-      throw new BadRequestException();
-    }
-
-    if (new Date(verificationToken.expiresAt) < new Date()) {
+    if (!verificationToken || verificationToken.user.isEmailVerified || new Date(verificationToken.expiresAt) < new Date()) {
       throw new BadRequestException();
     }
 
@@ -140,20 +133,20 @@ export class AuthService {
     user.isEmailVerified = true;
     await this.usersService.save(user);
 
-    await this.emailVerificationsService.delete({ user });
+    await this.emailVerificationsService.delete({ userId: user.id });
 
     return { message: 'Correo verificado exitosamente' };
   }
 
   async sendVerification(email: string) {
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.findOneBy({ email: email });
 
     if (!user) {
       throw new BadRequestException();
     }
 
     if (!user.isEmailVerified) {
-      await this.emailVerificationsService.sendVerificationEmail(email, user);
+      await this.emailVerificationsService.sendVerificationEmail(email, user.id);
     } else {
       await this.emailVerificationsService.sendIsAlreadyVerifiedEmail(email);
     }
@@ -162,9 +155,9 @@ export class AuthService {
   }
 
   async forgotPassword(email: string) {
-    const user = await this.usersService.findOne({ where: { email } });
+    const user = await this.usersService.findOneBy({ email: email });
     if (user) {
-      await this.passwordResetTokensService.sendPasswordResetToken(email, user);
+      await this.passwordResetTokensService.sendPasswordResetToken(email, user.id);
     }
 
     return {
@@ -183,10 +176,11 @@ export class AuthService {
     }
 
     const user = resetToken.user;
+
     if (!user.isEmailVerified) {
       user.isEmailVerified = true;
       if (!user.password) {
-        await this.usersService.addProvider('local', user.email, user);
+        await this.authProvidersService.save({ provider: 'local', providerId: user.email, user: { id: user.id } });
       }
     }
 
@@ -194,7 +188,7 @@ export class AuthService {
     user.password = hashedPassword;
     await this.usersService.save(user);
 
-    await this.passwordResetTokensService.delete({ user });
+    await this.passwordResetTokensService.delete({ user: { id: user.id } });
 
     return { message: 'Contraseña actualizada correctamente' };
   }
@@ -203,7 +197,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-      roles: user.roles.map((role) => role.name),
+      role: user.role,
     };
 
     return {

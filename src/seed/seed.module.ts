@@ -1,17 +1,17 @@
+import { Brand } from '@/admin/inventory/brands/entities/brand.entity';
+import { Category } from '@/admin/inventory/categories/entities/category.entity';
+import { Product } from '@/admin/inventory/products/entities/product.entity';
+import { Customer } from '@/admin/transactions/customers/entities/customer.entity';
+import { Supplier } from '@/admin/transactions/suppliers/entities/supplier.entity';
+import { AppModule } from '@/app.module';
+import { Profile } from '@/auth/modules/profiles/entities/profile.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { SeedService } from '@/seed/seed.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Role } from '../auth/modules/roles/entities/role.entity';
-import { User } from '../auth/modules/users/entities/user.entity';
-import { SeedService } from './seed.service';
-import { Brand } from '../brands/entities/brand.entity';
-import { Category } from '../categories/entities/category.entity';
-import { AppModule } from '../app.module';
-import { Supplier } from '../suppliers/entities/supplier.entity';
-import { Product } from '../products/entities/product.entity';
-import { DocumentType } from '../document-types/entities/document-type.entity';
 
 @Module({
-  imports: [AppModule, TypeOrmModule.forFeature([User, Role, Category, Brand, Supplier, Product, DocumentType])],
+  imports: [AppModule, TypeOrmModule.forFeature([User, Profile, Category, Brand, Supplier, Customer, Product])],
   providers: [SeedService],
 })
 export class SeedModule {}

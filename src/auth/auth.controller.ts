@@ -1,14 +1,14 @@
+import { AuthService } from '@/auth/auth.service';
+import { Public } from '@/auth/decorators/is-public.decorator';
+import { Roles } from '@/auth/decorators/roles.decorator';
+import { ForgotPasswordDto } from '@/auth/dto/forgot-password.dto';
+import { GoogleCodeDto } from '@/auth/dto/google-code.dto';
+import { LoginDto } from '@/auth/dto/login.dto';
+import { RegisterDto } from '@/auth/dto/register.dto';
+import { ResetPasswordDto } from '@/auth/dto/reset-password.dto';
+import { SendVerificationDto } from '@/auth/dto/send-verification.dto';
+import { VerifyEmailDto } from '@/auth/dto/verify-email.dto';
 import { Controller, Post, Body, Get } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Public } from './decorators/is-public.decorator';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { SendVerificationDto } from './dto/send-verification.dto';
-import { VerifyEmailDto } from './dto/verify-email.dto';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { GoogleCodeDto } from './dto/google-code.dto';
-import { Roles } from './decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -68,5 +68,13 @@ export class AuthController {
   @Get('me')
   me() {
     return { message: 'me' };
+  }
+
+  @Public()
+  @Get('hello')
+  hello() {
+    {
+      return JSON.stringify('Hello World');
+    }
   }
 }

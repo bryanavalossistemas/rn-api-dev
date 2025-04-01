@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PasswordResetToken } from './entities/password-reset-token.entity';
-import { DeepPartial, FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../users/entities/user.entity';
+import { PasswordResetToken } from '@/auth/modules/password-reset-tokens/entities/password-reset-token.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
 
 @Injectable()
 export class PasswordResetTokensService {
@@ -15,10 +15,6 @@ export class PasswordResetTokensService {
     private readonly configService: ConfigService,
   ) {}
 
-  async save(entities: DeepPartial<PasswordResetToken>) {
-    return await this.passwordResetTokenRepository.save(entities);
-  }
-
   async findOne(options: FindOneOptions<PasswordResetToken>) {
     return await this.passwordResetTokenRepository.findOne(options);
   }
@@ -27,11 +23,11 @@ export class PasswordResetTokensService {
     return await this.passwordResetTokenRepository.delete(criteria);
   }
 
-  async sendPasswordResetToken(email: string, user: User) {
+  async sendPasswordResetToken(email: string, userId: User['id']) {
     const token = Math.floor(100000 + Math.random() * 900000).toString();
     await this.passwordResetTokenRepository.save({
-      token,
-      user,
+      token: token,
+      userId: userId,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
 

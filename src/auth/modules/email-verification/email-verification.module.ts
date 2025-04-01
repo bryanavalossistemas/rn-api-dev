@@ -1,6 +1,6 @@
+import { EmailVerificationService } from '@/auth/modules/email-verification/email-verification.service';
+import { EmailVerification } from '@/auth/modules/email-verification/entities/email-verification.entity';
 import { Module } from '@nestjs/common';
-import { EmailVerificationService } from './email-verification.service';
-import { EmailVerification } from './entities/email-verification.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

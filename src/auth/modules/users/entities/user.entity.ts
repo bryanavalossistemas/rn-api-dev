@@ -1,10 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinTable, Relation, OneToMany } from 'typeorm';
-import { Profile } from '../../profiles/entities/profile.entity';
-import { Role } from '../../roles/entities/role.entity';
-import { AuthProvider } from '../../auth-providers/entities/auth-provider.entity';
-import { EmailVerification } from '../../email-verification/entities/email-verification.entity';
-import { PasswordResetToken } from '../../password-reset-tokens/entities/password-reset-token.entity';
-import { Document } from '../../../../documents/entities/document.entity';
+import { AuthProvider } from '@/auth/modules/auth-providers/entities/auth-provider.entity';
+import { EmailVerification } from '@/auth/modules/email-verification/entities/email-verification.entity';
+import { PasswordResetToken } from '@/auth/modules/password-reset-tokens/entities/password-reset-token.entity';
+import { Profile } from '@/auth/modules/profiles/entities/profile.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, Relation, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -20,28 +18,18 @@ export class User {
   @Column({ type: 'boolean', default: false })
   isEmailVerified: boolean;
 
-  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
-  profile: Relation<Profile>;
+  @Column({ type: 'varchar' })
+  role: 'admin' | 'employee' | 'user';
 
-  @OneToMany(() => EmailVerification, (emailVerification) => emailVerification.user, {
-    cascade: true,
-  })
-  emailVerifications: Relation<EmailVerification[]>;
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
 
-  @OneToMany(() => PasswordResetToken, (passwordResetToken) => passwordResetToken.user, {
-    cascade: true,
-  })
-  passwordResetTokens: Relation<PasswordResetToken[]>;
+  @OneToMany(() => EmailVerification, (emailVerification) => emailVerification.user)
+  emailVerifications: EmailVerification[];
 
-  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
-  @JoinTable()
-  roles: Relation<Role[]>;
+  @OneToMany(() => PasswordResetToken, (passwordResetToken) => passwordResetToken.user)
+  passwordResetTokens: PasswordResetToken[];
 
-  @OneToMany(() => AuthProvider, (authProvider) => authProvider.user, {
-    cascade: true,
-  })
-  authProviders: Relation<AuthProvider[]>;
-
-  @OneToMany(() => Document, (document) => document.user)
-  documents: Relation<Document[]>;
+  @OneToMany(() => AuthProvider, (authProvider) => authProvider.user)
+  authProviders: AuthProvider[];
 }

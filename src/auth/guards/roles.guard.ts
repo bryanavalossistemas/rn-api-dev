@@ -1,16 +1,19 @@
+import { IS_PUBLIC_KEY } from '@/auth/decorators/is-public.decorator';
+import { ROLES_KEY } from '@/auth/decorators/roles.decorator';
+import { User } from '@/auth/modules/users/entities/user.entity';
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from '../decorators/is-public.decorator';
-import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Request } from 'express';
+
+interface Payload {
+  sub: User['id'];
+  email: User['email'];
+  role: 'admin' | 'employee' | 'user';
+}
 
 declare module 'express' {
   interface Request {
-    user: {
-      sub: number;
-      email: string;
-      roles: string[];
-    };
+    user: Payload;
   }
 }
 
@@ -28,11 +31,11 @@ export class RolesGuard implements CanActivate {
 
     const { user } = context.switchToHttp().getRequest<Request>();
 
-    if (!user?.roles?.length) {
+    if (!user.role) {
       throw new UnauthorizedException();
     }
 
-    const hasRole = requiredRoles.some((role) => user.roles.includes(role));
+    const hasRole = requiredRoles.includes(user.role);
     if (!hasRole) {
       throw new UnauthorizedException();
     }

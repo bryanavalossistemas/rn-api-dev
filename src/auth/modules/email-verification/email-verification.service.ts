@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmailVerification } from './entities/email-verification.entity';
 import { DeepPartial, FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
-import { User } from '../users/entities/user.entity';
+import { EmailVerification } from '@/auth/modules/email-verification/entities/email-verification.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
 
 @Injectable()
 export class EmailVerificationService {
@@ -45,11 +45,11 @@ export class EmailVerificationService {
     });
   }
 
-  async sendVerificationEmail(email: string, user: User) {
+  async sendVerificationEmail(email: string, userId: User['id']) {
     const token = Math.floor(100000 + Math.random() * 900000).toString();
     await this.emailVerificationRepository.save({
-      token,
-      user,
+      token: token,
+      userId: userId,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
 

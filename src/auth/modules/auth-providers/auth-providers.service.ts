@@ -1,5 +1,5 @@
+import { AuthProvider } from '@/auth/modules/auth-providers/entities/auth-provider.entity';
 import { Injectable } from '@nestjs/common';
-import { AuthProvider } from './entities/auth-provider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 

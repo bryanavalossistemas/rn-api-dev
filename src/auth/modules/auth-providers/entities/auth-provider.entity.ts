@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Relation } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from '@/auth/modules/users/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Relation, JoinColumn } from 'typeorm';
 
 @Entity()
 export class AuthProvider {
@@ -7,11 +7,15 @@ export class AuthProvider {
   id: number;
 
   @Column({ type: 'varchar' })
-  provider: string;
+  provider: 'local' | 'google';
 
-  @Column({ type: 'varchar', nullable: true, unique: true })
+  @Column({ type: 'varchar', unique: true })
   providerId: string;
 
+  @Column({ type: 'integer' })
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.authProviders)
-  user: Relation<User>;
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }
