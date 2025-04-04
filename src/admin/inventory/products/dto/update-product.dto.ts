@@ -3,7 +3,7 @@ import { IsArray, IsBoolean, IsInt, IsOptional, IsString, MinLength, ValidateNes
 import { plainToInstance, Transform, Type } from 'class-transformer';
 import { CreateProductDto } from '@/admin/inventory/products/dto/create-product.dto';
 
-class OldImageDto {
+class ImageDto {
   @MinLength(1)
   @IsString()
   path: string;
@@ -19,10 +19,10 @@ class OldImageDto {
 export class UpdateProductDto extends PartialType(CreateProductDto) {
   @IsOptional()
   @Transform(({ value }: { value: string }) => {
-    return plainToInstance(OldImageDto, JSON.parse(value));
+    return plainToInstance(ImageDto, JSON.parse(value));
   })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => OldImageDto)
-  oldImages?: OldImageDto[];
+  @Type(() => ImageDto)
+  images?: ImageDto[];
 }

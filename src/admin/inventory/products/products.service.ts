@@ -1,8 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, DeepPartial, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
-import { join } from 'path';
 import * as sharp from 'sharp';
 import { unlink } from 'fs/promises';
 import { Product } from '@/admin/inventory/products/entities/product.entity';
@@ -29,18 +28,17 @@ export class ProductsService {
     return await this.productsRepository.save(product);
   }
 
-  async create(createProductDto: CreateProductDto, images?: Array<Express.Multer.File>) {
+  async create(createProductDto: CreateProductDto, newImages?: Array<Express.Multer.File>) {
     const product = await this.productsRepository.save(createProductDto);
 
-    if (images && images.length > 0) {
-      for (const image of images) {
+    if (newImages && newImages.length > 0) {
+      for (const image of newImages) {
         const fileName = `${uuidv4()}.webp`;
-        const outputPath = join('uploads', fileName);
-        await sharp(image.buffer).toFormat('webp').toFile(outputPath);
+        await sharp(image.buffer).toFormat('webp').toFile(`uploads/${fileName}`);
 
         await this.productImagesService.save({
           productId: product.id,
-          path: `uploads/${fileName}`,
+          path: fileName,
         });
       }
     }
@@ -50,7 +48,6 @@ export class ProductsService {
     return await this.productsRepository.findOne({
       where: { id: product.id },
       relations: { images: true },
-      order: { images: { id: 'DESC' } },
     });
   }
 
@@ -58,7 +55,7 @@ export class ProductsService {
     const { startDate, endDate } = dateRange;
     const options: FindManyOptions<Product> = {
       relations: { images: true, category: true },
-      order: { id: 'DESC', images: { id: 'DESC' } },
+      order: { id: 'DESC' },
     };
     if (startDate && endDate) {
       options.where = { createdAt: Between(startDate, endDate) };
@@ -84,33 +81,34 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto, images?: Array<Express.Multer.File>) {
-    const product = await this.productsRepository.preload({ id, ...updateProductDto });
+  async update(id: number, updateProductDto: UpdateProductDto, newImages?: Array<Express.Multer.File>) {
+    const { images, ...rest } = updateProductDto;
+
+    const product = await this.productsRepository.preload({ id, ...rest });
 
     if (!product) {
       throw new NotFoundException(`Item con ID ${id} no encontrado`);
     }
 
-    const { oldImages } = updateProductDto;
-    if (oldImages && oldImages.length > 0) {
-      const imagesToDelete = oldImages.filter((i) => i.deleted);
+    if (images && images.length > 0) {
+      const imagesToDelete = images.filter((i) => i.deleted);
       for (const imageToDelete of imagesToDelete) {
-        const filePath = join('uploads', this.getFileNameFromUrl(imageToDelete.path));
+        const filePath = `uploads/${imageToDelete.path}`;
         await unlink(filePath);
         await this.productImagesService.delete({ id: imageToDelete.id });
       }
     }
 
-    if (images && images.length > 0) {
-      for (const image of images) {
+    if (newImages && newImages.length > 0) {
+      for (const image of newImages) {
         const fileName = `${uuidv4()}.webp`;
-        const outputPath = join('uploads', fileName);
+        const outputPath = `uploads/${fileName}`;
 
         await sharp(image.buffer).toFormat('webp').toFile(outputPath);
 
         await this.productImagesService.save({
           productId: product.id,
-          path: `uploads/${fileName}`,
+          path: fileName,
         });
       }
     }
@@ -120,7 +118,6 @@ export class ProductsService {
     const updatedProduct = await this.findOne({
       where: { id: product.id },
       relations: { images: true },
-      order: { images: { id: 'DESC' } },
     });
 
     this.productUpdatesGateway.notifyProductUpdate(updatedProduct.id, updatedProduct);
@@ -137,21 +134,13 @@ export class ProductsService {
       where: { productId: product.id },
     });
     for (const image of images) {
-      const filePath = join('uploads', this.getFileNameFromUrl(image.path));
+      const filePath = `uploads/${image.path}`;
       await unlink(filePath);
     }
 
     await this.productsRepository.delete({ id: product.id });
 
     return { message: 'Producto eliminado correctamente' };
-  }
-
-  private getFileNameFromUrl(url: string): string {
-    const fileNameFromUrl = url.split('/').pop();
-    if (!fileNameFromUrl) {
-      throw new BadRequestException();
-    }
-    return fileNameFromUrl;
   }
 
   private async triggerNetlifyRebuild() {

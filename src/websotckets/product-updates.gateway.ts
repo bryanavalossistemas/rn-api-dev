@@ -31,7 +31,6 @@ export class ProductUpdatesGateway implements OnGatewayInit, OnGatewayConnection
   }
 
   public notifyProductUpdate(productId: number, updatedProduct: Product) {
-    this.logger.log(`Enviando update a producto ${productId}: ${JSON.stringify(updatedProduct)}`);
     this.server.to(`product_${productId}`).emit(`productUpdated:${productId}`, updatedProduct);
     this.server.emit('productListUpdated', {
       id: updatedProduct.id,

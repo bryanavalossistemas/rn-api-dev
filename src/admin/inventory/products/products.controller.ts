@@ -10,9 +10,9 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('images'))
-  async create(@UploadedFiles() images: Array<Express.Multer.File>, @Body() createProductDto: CreateProductDto) {
-    return await this.productsService.create(createProductDto, images);
+  @UseInterceptors(FilesInterceptor('newImages'))
+  async create(@Body() createProductDto: CreateProductDto, @UploadedFiles() newImages?: Array<Express.Multer.File>) {
+    return await this.productsService.create(createProductDto, newImages);
   }
 
   @Get()
@@ -31,13 +31,13 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(FilesInterceptor('newImages'))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() images: Array<Express.Multer.File>,
     @Body() updateProductDto: UpdateProductDto,
+    @UploadedFiles() newImages?: Array<Express.Multer.File>,
   ) {
-    return await this.productsService.update(id, updateProductDto, images);
+    return await this.productsService.update(id, updateProductDto, newImages);
   }
 
   @Delete(':id')
