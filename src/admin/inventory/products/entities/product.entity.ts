@@ -1,6 +1,7 @@
 import { Brand } from '@/admin/inventory/brands/entities/brand.entity';
 import { Category } from '@/admin/inventory/categories/entities/category.entity';
 import { InventoryMovement } from '@/admin/inventory/inventory-movements/entities/inventory-movement.entity';
+import { MeasurementUnit } from '@/admin/inventory/measurement-units/entities/measurement-unit.entity';
 import { ProductImage } from '@/admin/inventory/product-images/entities/product-image.entity';
 import { PurchaseDetail } from '@/admin/transactions/purchase-details/entities/purchase-detail.entity';
 import { SaleDetail } from '@/admin/transactions/sale-details/entities/sale-detail.entity';
@@ -22,12 +23,6 @@ export class Product {
 
   @Column({ type: 'varchar', nullable: true })
   sku: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  measurementUnit: string | null;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  measurementQuantity: number;
 
   @Column({ type: 'integer' })
   ecommercePercentageDiscount: number;
@@ -78,6 +73,19 @@ export class Product {
 
   @OneToMany(() => SaleDetail, (saleDetail) => saleDetail.product)
   saleDetails: SaleDetail[];
+
+  @Column({ type: 'integer', nullable: true })
+  measurementUnitId: number | null;
+
+  @ManyToOne(() => MeasurementUnit, (measurementUnit) => measurementUnit.products, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'measurementUnitId' })
+  measurementUnit?: MeasurementUnit | null;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  measurementQuantity: number;
 
   @CreateDateColumn()
   createdAt: Date;

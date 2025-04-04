@@ -21,9 +21,15 @@ export class CreateProductDto {
   sku?: string | null;
 
   @IsOptional()
-  @IsString()
-  @Transform(({ value }: { value: string }) => (value === '' ? null : value))
-  measurementUnit?: string | null;
+  @IsInt()
+  @Min(1)
+  @Transform(({ value }: { value: string }) => {
+    if (value === 'null') {
+      return null;
+    }
+    return parseInt(value, 10);
+  })
+  measurementUnitId?: number | null;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
@@ -69,7 +75,7 @@ export class CreateProductDto {
   @IsInt()
   @Min(1)
   @Transform(({ value }: { value: string }) => {
-    if (value === null || value === undefined) {
+    if (value === 'null') {
       return null;
     }
     return parseInt(value, 10);
@@ -80,7 +86,7 @@ export class CreateProductDto {
   @IsInt()
   @Min(1)
   @Transform(({ value }: { value: string }) => {
-    if (value === null || value === undefined) {
+    if (value === 'null') {
       return null;
     }
     return parseInt(value, 10);

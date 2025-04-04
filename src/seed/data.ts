@@ -1,5 +1,6 @@
 import { Brand } from '@/admin/inventory/brands/entities/brand.entity';
 import { Category } from '@/admin/inventory/categories/entities/category.entity';
+import { MeasurementUnit } from '@/admin/inventory/measurement-units/entities/measurement-unit.entity';
 import { Product } from '@/admin/inventory/products/entities/product.entity';
 import { Customer } from '@/admin/transactions/customers/entities/customer.entity';
 import { Supplier } from '@/admin/transactions/suppliers/entities/supplier.entity';
@@ -353,215 +354,184 @@ export const customersData: DeepPartial<Customer[]> = [
   },
 ];
 
+export const measurementUnitsData: DeepPartial<MeasurementUnit[]> = [
+  {
+    name: 'kilogramo',
+    prefix: 'kg',
+  },
+  {
+    name: 'gramo',
+    prefix: 'g',
+  },
+  {
+    name: 'litro',
+    prefix: 'L',
+  },
+  {
+    name: 'mililitro',
+    prefix: 'ml',
+  },
+  {
+    name: 'unidad',
+    prefix: 'ud',
+  },
+  {
+    name: 'paquete',
+    prefix: 'pqt',
+  },
+  {
+    name: 'docena',
+    prefix: 'dz',
+  },
+  {
+    name: 'metro',
+    prefix: 'm',
+  },
+  {
+    name: 'centímetro',
+    prefix: 'cm',
+  },
+  {
+    name: 'libra',
+    prefix: 'lb',
+  },
+];
+
 export const productsData: DeepPartial<Product[]> = [
   {
     id: 1,
     name: 'Harina Anita Pastelera x 50kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 1,
-    costPrice: 1,
-    salePrice: 3,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
+    description: 'Harina de la marca Anita. Ideal para panadería y repostería.',
+    barCode: '7801234567897',
+    showInEcommerce: true,
+    sku: 'HAR-001',
+    stock: 20,
+    costPrice: 120,
+    salePrice: 140,
+    ecommerceSalePrice: 150,
+    ecommercePercentageDiscount: 10,
+    measurementUnitId: 1, // kg
+    measurementQuantity: 50,
     categoryId: 1, // Harinas
-    brandId: 1, // Anita
+    brandId: 1,
   },
   {
     id: 2,
     name: 'Leche Gloria Entera x 1L',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
+    description: 'Leche evaporada Gloria, clásica y nutritiva.',
+    barCode: '7801234567898',
+    showInEcommerce: true,
+    sku: 'LEC-001',
     stock: 50,
-    costPrice: 3.8,
-    salePrice: 4.5,
-    ecommerceSalePrice: 10,
+    costPrice: 4.5,
+    salePrice: 6,
+    ecommerceSalePrice: 6.5,
     ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
+    measurementUnitId: 3, // L
+    measurementQuantity: 1,
     categoryId: 2, // Lácteos
-    brandId: 2, // Gloria
+    brandId: 2,
   },
   {
     id: 3,
-    name: 'Yogurt Laive Natural x 1kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 30,
-    costPrice: 6.5,
-    salePrice: 8.0,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 2, // Lácteos
-    brandId: 3, // Laive
+    name: 'Pollo San Fernando x 1kg',
+    description: 'Pollo fresco de la marca San Fernando.',
+    barCode: '7801234567899',
+    showInEcommerce: true,
+    sku: 'CAR-001',
+    stock: 15,
+    costPrice: 12,
+    salePrice: 16,
+    ecommerceSalePrice: 17,
+    ecommercePercentageDiscount: 5,
+    measurementUnitId: 1, // kg
+    measurementQuantity: 1,
+    categoryId: 3, // Carnes
+    brandId: 3,
   },
   {
     id: 4,
-    name: 'Pollo San Fernando Entero x 1.5kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 20,
-    costPrice: 12.0,
-    salePrice: 15.0,
-    ecommerceSalePrice: 10,
+    name: 'Palta Hass x 1kg',
+    description: 'Paltas frescas de la variedad Hass.',
+    barCode: '7801234567900',
+    showInEcommerce: true,
+    sku: 'FRU-001',
+    stock: 30,
+    costPrice: 8,
+    salePrice: 12,
+    ecommerceSalePrice: 13,
     ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 3, // Carnes
-    brandId: 7, // San Fernando
+    measurementUnitId: 1, // kg
+    measurementQuantity: 1,
+    categoryId: 4, // Frutas y Verduras
+    brandId: null,
   },
   {
     id: 5,
-    name: 'Manzana Roja x 1kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 100,
-    costPrice: 4.0,
-    salePrice: 5.5,
-    ecommerceSalePrice: 10,
+    name: 'Inca Kola x 3L',
+    description: 'Refresco peruano de sabor único.',
+    barCode: '7801234567901',
+    showInEcommerce: true,
+    sku: 'BEB-001',
+    stock: 25,
+    costPrice: 7,
+    salePrice: 10,
+    ecommerceSalePrice: 11,
     ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 4, // Frutas y Verduras
-    brandId: null, // Sin marca
+    measurementUnitId: 3, // L
+    measurementQuantity: 3,
+    categoryId: 5, // Bebidas
+    brandId: 4,
   },
   {
     id: 6,
-    name: 'Gaseosa Inca Kola x 3L',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
+    name: 'Chips Ahoy! x 90g',
+    description: 'Galletas con chispas de chocolate.',
+    barCode: '7801234567902',
+    showInEcommerce: true,
+    sku: 'SNK-001',
     stock: 40,
-    costPrice: 5.0,
-    salePrice: 7.0,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 5, // Bebidas
-    brandId: 11, // Cusqueña (asociada a Inca Kola)
+    costPrice: 3.5,
+    salePrice: 5,
+    ecommerceSalePrice: 5.5,
+    ecommercePercentageDiscount: 10,
+    measurementUnitId: 2, // g
+    measurementQuantity: 90,
+    categoryId: 6, // Snacks
+    brandId: 5,
   },
   {
     id: 7,
-    name: "Papas Fritas Lay's Clásicas x 150g",
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 60,
-    costPrice: 2.5,
-    salePrice: 4.0,
-    ecommerceSalePrice: 10,
+    name: 'Atún Florida x 170g',
+    description: 'Lomitos de atún en agua.',
+    barCode: '7801234567903',
+    showInEcommerce: true,
+    sku: 'CON-001',
+    stock: 35,
+    costPrice: 6,
+    salePrice: 8,
+    ecommerceSalePrice: 8.5,
     ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 6, // Snacks
-    brandId: null, // Lay's (no es peruana, pero común en Perú)
+    measurementUnitId: 2, // g
+    measurementQuantity: 170,
+    categoryId: 7, // Conservas
+    brandId: 6,
   },
   {
     id: 8,
-    name: 'Atún Costa en Aceite x 170g',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 25,
-    costPrice: 4.5,
-    salePrice: 6.0,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 7, // Conservas
-    brandId: 8, // Costa
-  },
-  {
-    id: 9,
     name: 'Aceite Primor x 1L',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 35,
-    costPrice: 8.0,
-    salePrice: 10.0,
-    ecommerceSalePrice: 10,
-    measurementQuantity: 0,
-    ecommercePercentageDiscount: 0,
-    categoryId: 8, // Aceites y Vinagres
-    brandId: 5, // Alicorp (Primor es una marca de Alicorp)
-  },
-  {
-    id: 10,
-    name: 'Azúcar Rubia Incauca x 1kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 70,
-    costPrice: 3.0,
-    salePrice: 4.5,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 11, // Cereales y Granos
-    brandId: 12, // Inka Crops
-  },
-  {
-    id: 11,
-    name: 'Detergente Bolívar x 1kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 45,
-    costPrice: 6.0,
-    salePrice: 8.0,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 12, // Productos de Limpieza
-    brandId: 5, // Alicorp (Bolívar es una marca de Alicorp)
-  },
-  {
-    id: 12,
-    name: 'Jabón Lux x 120g',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 80,
-    costPrice: 1.5,
-    salePrice: 2.5,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 13, // Cuidado Personal
-    brandId: null, // Lux (no es peruana, pero común en Perú)
-  },
-  {
-    id: 13,
-    name: 'Helado Donofrio Vainilla x 1L',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 15,
-    costPrice: 10.0,
-    salePrice: 12.5,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 14, // Congelados
-    brandId: 4, // Nestlé Perú (Donofrio es una marca de Nestlé)
-  },
-  {
-    id: 14,
-    name: 'Comida para Perro Raza Pequeña x 3kg',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
+    description: 'Aceite vegetal para cocina.',
+    barCode: '7801234567904',
+    showInEcommerce: true,
+    sku: 'ACE-001',
     stock: 20,
-    costPrice: 25.0,
-    salePrice: 30.0,
-    ecommerceSalePrice: 10,
+    costPrice: 9,
+    salePrice: 12,
+    ecommerceSalePrice: 13,
     ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 15, // Alimentos para Mascotas
-    brandId: 5, // Alicorp (Raza es una marca de Alicorp)
-  },
-  {
-    id: 15,
-    name: 'Galletas Margarita Clásicas x 150g Con un nombre recontra largo para probar',
-    description:
-      'Diseñado para facilitar las tareas diarias, este producto ofrece funcionalidad y practicidad. Su diseño moderno se adapta a cualquier espacio, brindando soluciones sencillas y eficientes.',
-    stock: 50,
-    costPrice: 2.0,
-    salePrice: 3.5,
-    ecommerceSalePrice: 10,
-    ecommercePercentageDiscount: 0,
-    measurementQuantity: 0,
-    categoryId: 10, // Panadería y Repostería
-    brandId: 5, // Alicorp (Margarita es una marca de Alicorp)
+    measurementUnitId: 3, // L
+    measurementQuantity: 1,
+    categoryId: 8, // Aceites y Vinagres
+    brandId: 7,
   },
 ];

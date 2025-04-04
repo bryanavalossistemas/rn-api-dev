@@ -17,6 +17,7 @@ import { CustomersModule } from '@admin/transactions/customers/customers.module'
 import { typeOrmConfig } from '@/config/typeorm.config';
 import { PurchaseDetailsModule } from '@/admin/transactions/purchase-details/purchase-details.module';
 import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-details.module';
+import { MeasurementUnitsModule } from '@/admin/inventory/measurement-units/measurement-units.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-detail
     CustomersModule,
     PurchaseDetailsModule,
     SaleDetailsModule,
+    MeasurementUnitsModule,
   ],
   providers: [
     // {
