@@ -3,7 +3,6 @@ import { ProductsService } from '@/admin/inventory/products/products.service';
 import { CustomersService } from '@/admin/transactions/customers/customers.service';
 import { SaleDetailsService } from '@/admin/transactions/sale-details/sale-details.service';
 import { CreateSaleDto } from '@/admin/transactions/sales/dto/create-sale.dto';
-import { UpdateSaleDto } from '@/admin/transactions/sales/dto/update-sale.dto';
 import { Sale } from '@/admin/transactions/sales/entities/sale.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -95,13 +94,5 @@ export class SalesService {
       options.where = { createdAt: Between(startDate, endDate) };
     }
     return await this.salesRepository.find(options);
-  }
-
-  update(id: number, updateSaleDto: UpdateSaleDto) {
-    return `This action updates a #${id} sale`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} sale`;
   }
 }

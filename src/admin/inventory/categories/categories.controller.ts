@@ -2,15 +2,17 @@ import { CategoriesService } from '@/admin/inventory/categories/categories.servi
 import { CreateCategoryDto } from '@/admin/inventory/categories/dto/create-category.dto';
 import { UpdateCategoryDto } from '@/admin/inventory/categories/dto/update-category.dto';
 import { FindAllQueryDto } from '@/common/dto/find-all-query.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return await this.categoriesService.create(createCategoryDto);
+  @UseInterceptors(FileInterceptor('newImage'))
+  async create(@Body() createCategoryDto: CreateCategoryDto, @UploadedFile() newImage?: Express.Multer.File) {
+    return await this.categoriesService.create(createCategoryDto, newImage);
   }
 
   @Get()
@@ -30,8 +32,9 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return await this.categoriesService.update(id, updateCategoryDto);
+  @UseInterceptors(FileInterceptor('newImage'))
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateCategoryDto: UpdateCategoryDto, @UploadedFile() newImage?: Express.Multer.File) {
+    return await this.categoriesService.update(id, updateCategoryDto, newImage);
   }
 
   @Delete(':id')

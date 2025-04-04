@@ -25,6 +25,11 @@ export class ProductsController {
     return await this.productsService.findAll(dateRange);
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.productsService.findOneById(id);
+  }
+
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images'))
   async update(

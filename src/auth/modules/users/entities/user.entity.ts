@@ -2,7 +2,7 @@ import { AuthProvider } from '@/auth/modules/auth-providers/entities/auth-provid
 import { EmailVerification } from '@/auth/modules/email-verification/entities/email-verification.entity';
 import { PasswordResetToken } from '@/auth/modules/password-reset-tokens/entities/password-reset-token.entity';
 import { Profile } from '@/auth/modules/profiles/entities/profile.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, Relation, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {

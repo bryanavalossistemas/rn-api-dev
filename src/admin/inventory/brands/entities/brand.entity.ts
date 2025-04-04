@@ -1,5 +1,5 @@
 import { Product } from '@/admin/inventory/products/entities/product.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Brand {

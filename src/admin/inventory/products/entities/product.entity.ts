@@ -4,7 +4,7 @@ import { InventoryMovement } from '@/admin/inventory/inventory-movements/entitie
 import { ProductImage } from '@/admin/inventory/product-images/entities/product-image.entity';
 import { PurchaseDetail } from '@/admin/transactions/purchase-details/entities/purchase-detail.entity';
 import { SaleDetail } from '@/admin/transactions/sale-details/entities/sale-detail.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Product {
@@ -14,8 +14,32 @@ export class Product {
   @Column({ type: 'varchar' })
   name: string;
 
+  @Column({ type: 'text', nullable: true })
+  description: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  barCode: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  sku: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  measurementUnit: string | null;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  measurementQuantity: number;
+
+  @Column({ type: 'integer' })
+  ecommercePercentageDiscount: number;
+
+  @Column({ type: 'boolean', default: true })
+  showInEcommerce: boolean;
+
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   salePrice: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  ecommerceSalePrice: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   costPrice: number;

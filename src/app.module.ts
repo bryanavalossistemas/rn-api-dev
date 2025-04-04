@@ -27,7 +27,6 @@ import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-detail
       useFactory: typeOrmConfig,
       inject: [ConfigService],
     }),
-
     AuthModule,
     CategoriesModule,
     BrandsModule,

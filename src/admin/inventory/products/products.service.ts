@@ -9,6 +9,10 @@ import { Product } from '@/admin/inventory/products/entities/product.entity';
 import { ProductImagesService } from '@/admin/inventory/product-images/product-images.service';
 import { CreateProductDto } from '@/admin/inventory/products/dto/create-product.dto';
 import { UpdateProductDto } from '@/admin/inventory/products/dto/update-product.dto';
+import { ProductUpdatesGateway } from '@/websotckets/product-updates.gateway';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProductsService {
@@ -16,6 +20,9 @@ export class ProductsService {
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>,
     private readonly productImagesService: ProductImagesService,
+    private readonly productUpdatesGateway: ProductUpdatesGateway,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
   ) {}
 
   async save(product: DeepPartial<Product>) {
@@ -38,6 +45,8 @@ export class ProductsService {
       }
     }
 
+    this.triggerNetlifyRebuild().catch((error) => console.error('Error al disparar rebuild en Netlify:', error));
+
     return await this.productsRepository.findOne({
       where: { id: product.id },
       relations: { images: true },
@@ -48,7 +57,7 @@ export class ProductsService {
   async findAll(dateRange: { startDate?: Date; endDate?: Date }) {
     const { startDate, endDate } = dateRange;
     const options: FindManyOptions<Product> = {
-      relations: { images: true },
+      relations: { images: true, category: true },
       order: { id: 'DESC', images: { id: 'DESC' } },
     };
     if (startDate && endDate) {
@@ -67,7 +76,7 @@ export class ProductsService {
   }
 
   async findOneById(id: number) {
-    const product = await this.productsRepository.findOneBy({ id });
+    const product = await this.productsRepository.findOne({ where: { id }, relations: { category: true, images: true } });
     if (!product) {
       throw new NotFoundException();
     }
@@ -108,11 +117,15 @@ export class ProductsService {
 
     await this.productsRepository.save(product);
 
-    return await this.productsRepository.findOne({
+    const updatedProduct = await this.findOne({
       where: { id: product.id },
       relations: { images: true },
       order: { images: { id: 'DESC' } },
     });
+
+    this.productUpdatesGateway.notifyProductUpdate(updatedProduct.id, updatedProduct);
+
+    return updatedProduct;
   }
 
   async remove(id: number) {
@@ -139,5 +152,10 @@ export class ProductsService {
       throw new BadRequestException();
     }
     return fileNameFromUrl;
+  }
+
+  private async triggerNetlifyRebuild() {
+    const NETLIFY_WEBHOOK = this.configService.get<string>('NETLIFY_WEBHOOK')!;
+    await firstValueFrom(this.httpService.post(NETLIFY_WEBHOOK, {}, { timeout: 3000 }));
   }
 }

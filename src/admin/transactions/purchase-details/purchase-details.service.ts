@@ -18,7 +18,7 @@ export class PurchaseDetailsService {
     return await this.purchaseDetailsRepository.findOne(options);
   }
 
-  async find(options?: FindManyOptions<PurchaseDetail> | undefined) {
+  async find(options?: FindManyOptions<PurchaseDetail>) {
     return await this.purchaseDetailsRepository.find(options);
   }
 

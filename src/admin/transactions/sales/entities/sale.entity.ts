@@ -1,6 +1,6 @@
 import { Customer } from '@/admin/transactions/customers/entities/customer.entity';
 import { SaleDetail } from '@/admin/transactions/sale-details/entities/sale-detail.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Sale {

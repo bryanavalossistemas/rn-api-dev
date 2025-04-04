@@ -1,5 +1,5 @@
 import { Purchase } from '@/admin/transactions/purchases/entities/purchase.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Supplier {

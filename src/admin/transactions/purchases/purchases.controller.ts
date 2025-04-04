@@ -2,7 +2,7 @@ import { CreatePurchaseDto } from '@/admin/transactions/purchases/dto/create-pur
 import { UpdatePurchaseDto } from '@/admin/transactions/purchases/dto/update-purchase.dto';
 import { PurchasesService } from '@/admin/transactions/purchases/purchases.service';
 import { FindAllQueryDto } from '@/common/dto/find-all-query.dto';
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Query } from '@nestjs/common';
 
 @Controller('purchases')
 export class PurchasesController {
