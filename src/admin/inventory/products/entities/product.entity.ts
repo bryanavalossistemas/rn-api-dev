@@ -24,17 +24,17 @@ export class Product {
   @Column({ type: 'varchar', nullable: true })
   sku: string | null;
 
-  @Column({ type: 'integer' })
-  ecommercePercentageDiscount: number;
-
-  @Column({ type: 'boolean', default: true })
-  showInEcommerce: boolean;
+  @Column({ type: 'integer', nullable: true })
+  ecommercePercentageDiscount: number | null;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   salePrice: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  ecommerceSalePrice: number;
+  @Column({ type: 'boolean', default: true })
+  showInEcommerce: boolean;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  ecommerceSalePrice: number | null;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   costPrice: number;
@@ -84,8 +84,8 @@ export class Product {
   @JoinColumn({ name: 'measurementUnitId' })
   measurementUnit?: MeasurementUnit | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  measurementQuantity: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  measurementQuantity: number | null;
 
   @CreateDateColumn()
   createdAt: Date;

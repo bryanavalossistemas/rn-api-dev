@@ -5,43 +5,54 @@ export class CreateProductDto {
   @MinLength(1)
   name: string;
 
+  @Transform(({ value }: { value: string }) => (value === 'null' ? null : value))
   @IsOptional()
   @IsString()
-  @Transform(({ value }: { value: string }) => (value === '' ? null : value))
   description?: string | null;
 
+  @Transform(({ value }: { value: string }) => (value === 'null' ? null : value))
   @IsOptional()
   @IsString()
-  @Transform(({ value }: { value: string }) => (value === '' ? null : value))
   barCode?: string | null;
 
+  @Transform(({ value }: { value: string }) => (value === 'null' ? null : value))
   @IsOptional()
   @IsString()
-  @Transform(({ value }: { value: string }) => (value === '' ? null : value))
   sku?: string | null;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1)
   @Transform(({ value }: { value: string }) => {
     if (value === 'null') {
       return null;
     }
     return parseInt(value, 10);
   })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
   measurementUnitId?: number | null;
 
+  @IsOptional()
+  @Transform(({ value }: { value: string }) => {
+    if (value === 'null') {
+      return null;
+    }
+    return parseFloat(value);
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseFloat(value))
-  measurementQuantity: number;
+  measurementQuantity?: number | null;
 
+  @IsOptional()
+  @Transform(({ value }: { value: string }) => {
+    if (value === 'null') {
+      return null;
+    }
+    return parseFloat(value);
+  })
   @IsNumber()
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseInt(value))
-  ecommercePercentageDiscount: number;
+  ecommercePercentageDiscount?: number | null;
 
-  @IsBoolean()
   @Transform(({ value }: { value: string }) => {
     if (value === 'true') {
       return true;
@@ -49,47 +60,54 @@ export class CreateProductDto {
       return false;
     }
   })
+  @IsBoolean()
   showInEcommerce: boolean;
 
+  @Transform(({ value }: { value: string }) => parseFloat(value))
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseFloat(value))
   salePrice: number;
 
+  @IsOptional()
+  @Transform(({ value }: { value: string }) => {
+    if (value === 'null') {
+      return null;
+    }
+    return parseFloat(value);
+  })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseFloat(value))
-  ecommerceSalePrice: number;
+  ecommerceSalePrice?: number | null;
 
+  @Transform(({ value }: { value: string }) => parseFloat(value))
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseFloat(value))
   costPrice: number;
 
+  @Transform(({ value }: { value: string }) => parseInt(value))
   @IsInt()
   @Min(0)
-  @Transform(({ value }: { value: string }) => parseInt(value))
   stock: number;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1)
   @Transform(({ value }: { value: string }) => {
     if (value === 'null') {
       return null;
     }
     return parseInt(value, 10);
   })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
   categoryId?: number | null;
 
-  @IsOptional()
-  @IsInt()
-  @Min(1)
   @Transform(({ value }: { value: string }) => {
     if (value === 'null') {
       return null;
     }
     return parseInt(value, 10);
   })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
   brandId?: number | null;
 }
