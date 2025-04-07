@@ -3,8 +3,7 @@ import { Category } from '@/admin/inventory/categories/entities/category.entity'
 import { InventoryMovement } from '@/admin/inventory/inventory-movements/entities/inventory-movement.entity';
 import { MeasurementUnit } from '@/admin/inventory/measurement-units/entities/measurement-unit.entity';
 import { ProductImage } from '@/admin/inventory/product-images/entities/product-image.entity';
-import { PurchaseDetail } from '@/admin/transactions/purchase-details/entities/purchase-detail.entity';
-import { SaleDetail } from '@/admin/transactions/sale-details/entities/sale-detail.entity';
+import { VoucherDetail } from '@/admin/transactions/voucher-details/entities/voucher-detail.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,6 +13,12 @@ export class Product {
 
   @Column({ type: 'varchar' })
   name: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  salePrice: number;
+
+  @Column({ type: 'integer', default: 0 })
+  stock: number;
 
   @Column({ type: 'text', nullable: true })
   description: string | null;
@@ -27,20 +32,14 @@ export class Product {
   @Column({ type: 'integer', nullable: true })
   ecommercePercentageDiscount: number | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  salePrice: number;
-
   @Column({ type: 'boolean', default: true })
   showInEcommerce: boolean;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   ecommerceSalePrice: number | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  costPrice: number;
-
-  @Column({ type: 'integer' })
-  stock: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  measurementQuantity: number | null;
 
   @Column({ type: 'integer', nullable: true })
   categoryId: number | null;
@@ -65,15 +64,6 @@ export class Product {
   @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
   images: ProductImage[];
 
-  @OneToMany(() => InventoryMovement, (inventoryMovement) => inventoryMovement.product)
-  inventoryMovements: InventoryMovement[];
-
-  @OneToMany(() => PurchaseDetail, (purchaseDetail) => purchaseDetail.product)
-  purchaseDetails: PurchaseDetail[];
-
-  @OneToMany(() => SaleDetail, (saleDetail) => saleDetail.product)
-  saleDetails: SaleDetail[];
-
   @Column({ type: 'integer', nullable: true })
   measurementUnitId: number | null;
 
@@ -84,8 +74,11 @@ export class Product {
   @JoinColumn({ name: 'measurementUnitId' })
   measurementUnit?: MeasurementUnit | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  measurementQuantity: number | null;
+  @OneToMany(() => VoucherDetail, (voucherDetail) => voucherDetail.product)
+  voucherDetails: VoucherDetail[];
+
+  @OneToMany(() => InventoryMovement, (inventoryMovement) => inventoryMovement.product)
+  inventoryMovements: InventoryMovement[];
 
   @CreateDateColumn()
   createdAt: Date;

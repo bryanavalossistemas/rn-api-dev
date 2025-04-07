@@ -1,23 +1,16 @@
 import { Module } from '@nestjs/common';
+import { PurchasesService } from './purchases.service';
+import { PurchasesController } from './purchases.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Purchase } from '@/admin/transactions/purchases/entities/purchase.entity';
-import { PurchasesController } from '@/admin/transactions/purchases/purchases.controller';
-import { PurchasesService } from '@/admin/transactions/purchases/purchases.service';
 import { ProductsModule } from '@/admin/inventory/products/products.module';
 import { InventoryMovementsModule } from '@/admin/inventory/inventory-movements/inventory-movements.module';
+import { VoucherDetailsModule } from '@/admin/transactions/voucher-details/voucher-details.module';
 import { SuppliersModule } from '@/admin/transactions/suppliers/suppliers.module';
-import { PurchaseDetailsModule } from '@/admin/transactions/purchase-details/purchase-details.module';
-import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-details.module';
+import { VouchersModule } from '@/admin/transactions/vouchers/vouchers.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Purchase]),
-    ProductsModule,
-    InventoryMovementsModule,
-    SuppliersModule,
-    PurchaseDetailsModule,
-    SaleDetailsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Purchase]), SuppliersModule, VouchersModule, ProductsModule, VoucherDetailsModule, InventoryMovementsModule],
   controllers: [PurchasesController],
   providers: [PurchasesService],
 })

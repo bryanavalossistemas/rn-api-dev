@@ -1,16 +1,17 @@
-import { CreatePurchaseDetailDto } from '@/admin/transactions/purchase-details/dto/create-purchase-detail.dto';
+import { CreateVoucherDetailDto } from '@/admin/transactions/voucher-details/dto/create-voucher-detail.dto';
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, MinLength, ValidateNested } from 'class-validator';
+import { IsArray, IsIn, IsInt, IsPositive, ValidateNested } from 'class-validator';
 
 export class CreatePurchaseDto {
-  @MinLength(1)
+  @IsIn(['Factura', 'Boleta'])
   documentType: 'Factura' | 'Boleta';
 
   @IsInt()
+  @IsPositive()
   supplierId: number;
 
-  @IsArray({ message: 'documentDetails debe ser un array.' })
+  @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreatePurchaseDetailDto)
-  purchaseDetails: CreatePurchaseDetailDto[];
+  @Type(() => CreateVoucherDetailDto)
+  voucherDetails: CreateVoucherDetailDto[];
 }

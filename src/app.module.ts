@@ -11,13 +11,13 @@ import { ProductsModule } from '@admin/inventory/products/products.module';
 import { ProductImagesModule } from '@admin/inventory/product-images/product-images.module';
 import { SuppliersModule } from '@admin/transactions/suppliers/suppliers.module';
 import { InventoryMovementsModule } from '@admin/inventory/inventory-movements/inventory-movements.module';
-import { PurchasesModule } from '@admin/transactions/purchases/purchases.module';
-import { SalesModule } from '@admin/transactions/sales/sales.module';
 import { CustomersModule } from '@admin/transactions/customers/customers.module';
 import { typeOrmConfig } from '@/config/typeorm.config';
-import { PurchaseDetailsModule } from '@/admin/transactions/purchase-details/purchase-details.module';
-import { SaleDetailsModule } from '@/admin/transactions/sale-details/sale-details.module';
 import { MeasurementUnitsModule } from '@/admin/inventory/measurement-units/measurement-units.module';
+import { VouchersModule } from '@/admin/transactions/vouchers/vouchers.module';
+import { VoucherDetailsModule } from '@/admin/transactions/voucher-details/voucher-details.module';
+import { PurchasesModule } from '@/admin/transactions/purchases/purchases.module';
+import { SalesModule } from '@/admin/transactions/sales/sales.module';
 
 @Module({
   imports: [
@@ -35,12 +35,12 @@ import { MeasurementUnitsModule } from '@/admin/inventory/measurement-units/meas
     ProductImagesModule,
     SuppliersModule,
     InventoryMovementsModule,
+    CustomersModule,
+    MeasurementUnitsModule,
+    VouchersModule,
+    VoucherDetailsModule,
     PurchasesModule,
     SalesModule,
-    CustomersModule,
-    PurchaseDetailsModule,
-    SaleDetailsModule,
-    MeasurementUnitsModule,
   ],
   providers: [
     // {

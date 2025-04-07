@@ -1,12 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { UpdateVoucherDetailDto } from '@/admin/transactions/voucher-details/dto/update-voucher-detail.dto';
 import { CreateSaleDto } from '@/admin/transactions/sales/dto/create-sale.dto';
-import { UpdateSaleDetailDto } from '@/admin/transactions/sale-details/dto/update-sale-detail.dto';
 
 export class UpdateSaleDto extends PartialType(CreateSaleDto) {
-  @IsArray({ message: 'documentDetails debe ser un array.' })
+  @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => UpdateSaleDetailDto)
-  saleDetails: UpdateSaleDetailDto[];
+  @Type(() => UpdateVoucherDetailDto)
+  voucherDetails: UpdateVoucherDetailDto[];
 }

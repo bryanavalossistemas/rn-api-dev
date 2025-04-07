@@ -1,8 +1,8 @@
+import { Controller, Get, Post, Body, Patch, Param, Query, ParseIntPipe, Delete } from '@nestjs/common';
+import { FindAllQueryDto } from '@/common/dto/find-all-query.dto';
+import { PurchasesService } from '@/admin/transactions/purchases/purchases.service';
 import { CreatePurchaseDto } from '@/admin/transactions/purchases/dto/create-purchase.dto';
 import { UpdatePurchaseDto } from '@/admin/transactions/purchases/dto/update-purchase.dto';
-import { PurchasesService } from '@/admin/transactions/purchases/purchases.service';
-import { FindAllQueryDto } from '@/common/dto/find-all-query.dto';
-import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Query } from '@nestjs/common';
 
 @Controller('purchases')
 export class PurchasesController {
@@ -29,8 +29,8 @@ export class PurchasesController {
     return await this.purchasesService.update(id, updatePurchaseDto);
   }
 
-  // @Delete(':id')
-  // async remove(@Param('id', ParseIntPipe) id: number) {
-  //   return await this.purchasesService.remove(id);
-  // }
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.purchasesService.remove(id);
+  }
 }

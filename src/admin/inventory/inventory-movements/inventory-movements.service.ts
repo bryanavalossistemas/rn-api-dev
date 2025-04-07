@@ -1,4 +1,5 @@
 import { InventoryMovement } from '@/admin/inventory/inventory-movements/entities/inventory-movement.entity';
+import { Product } from '@/admin/inventory/products/entities/product.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, FindManyOptions, FindOneOptions, FindOptionsWhere, ObjectId, Repository } from 'typeorm';
@@ -30,5 +31,25 @@ export class InventoryMovementsService {
 
   async delete(criteria: string | number | Date | ObjectId | string[] | number[] | Date[] | ObjectId[] | FindOptionsWhere<InventoryMovement>) {
     return await this.inventoryMovementsRepository.delete(criteria);
+  }
+
+  async getAverageCost(productId: Product['id'], untilDate: Date): Promise<number> {
+    const result = await this.inventoryMovementsRepository
+      .createQueryBuilder('m')
+      .select('SUM(m.quantity * m.unitCost)', 'totalCost')
+      .addSelect('SUM(m.quantity)', 'totalQuantity')
+      .where('m.productId = :productId', { productId })
+      .andWhere('m.movementType = :type', { type: 'IN' })
+      .andWhere('m.createdAt <= :untilDate', { untilDate })
+      .getRawOne();
+
+    const totalCost = parseFloat(result.totalCost || 0);
+    const totalQuantity = parseFloat(result.totalQuantity || 0);
+
+    if (totalQuantity === 0) {
+      throw new Error('No stock available to calculate average cost');
+    }
+
+    return parseFloat((totalCost / totalQuantity).toFixed(2));
   }
 }

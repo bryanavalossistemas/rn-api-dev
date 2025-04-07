@@ -1,14 +1,23 @@
 import { CreateVoucherDetailDto } from '@/admin/transactions/voucher-details/dto/create-voucher-detail.dto';
 import { Type } from 'class-transformer';
-import { IsArray, IsIn, IsInt, IsPositive, ValidateNested } from 'class-validator';
+import { IsArray, IsIn, IsInt, IsOptional, IsPositive, ValidateNested } from 'class-validator';
 
-export class CreateSaleDto {
+export class CreateVoucherDto {
+  @IsIn(['Compra', 'Venta'])
+  type: 'Compra' | 'Venta';
+
   @IsIn(['Factura', 'Boleta'])
   documentType: 'Factura' | 'Boleta';
 
+  @IsOptional()
   @IsInt()
   @IsPositive()
-  customerId: number;
+  supplierId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  customerId?: number;
 
   @IsArray()
   @ValidateNested({ each: true })

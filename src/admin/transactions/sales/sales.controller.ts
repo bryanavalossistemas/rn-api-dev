@@ -1,7 +1,8 @@
-import { CreateSaleDto } from '@/admin/transactions/sales/dto/create-sale.dto';
-import { SalesService } from '@/admin/transactions/sales/sales.service';
+import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Query, Delete } from '@nestjs/common';
 import { FindAllQueryDto } from '@/common/dto/find-all-query.dto';
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { SalesService } from '@/admin/transactions/sales/sales.service';
+import { CreateSaleDto } from '@/admin/transactions/sales/dto/create-sale.dto';
+import { UpdateSaleDto } from '@/admin/transactions/sales/dto/update-sale.dto';
 
 @Controller('sales')
 export class SalesController {
@@ -21,5 +22,15 @@ export class SalesController {
     };
 
     return await this.salesService.findAll(dateRange);
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateSaleDto: UpdateSaleDto) {
+    return this.salesService.update(id, updateSaleDto);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.salesService.remove(id);
   }
 }

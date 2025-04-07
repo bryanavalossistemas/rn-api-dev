@@ -5,6 +5,11 @@ export class CreateProductDto {
   @MinLength(1)
   name: string;
 
+  @Transform(({ value }: { value: string }) => parseFloat(value))
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  salePrice: number;
+
   @Transform(({ value }: { value: string }) => (value === 'null' ? null : value))
   @IsOptional()
   @IsString()
@@ -63,11 +68,6 @@ export class CreateProductDto {
   @IsBoolean()
   showInEcommerce: boolean;
 
-  @Transform(({ value }: { value: string }) => parseFloat(value))
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
-  salePrice: number;
-
   @IsOptional()
   @Transform(({ value }: { value: string }) => {
     if (value === 'null') {
@@ -78,16 +78,6 @@ export class CreateProductDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
   ecommerceSalePrice?: number | null;
-
-  @Transform(({ value }: { value: string }) => parseFloat(value))
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
-  costPrice: number;
-
-  @Transform(({ value }: { value: string }) => parseInt(value))
-  @IsInt()
-  @Min(0)
-  stock: number;
 
   @Transform(({ value }: { value: string }) => {
     if (value === 'null') {

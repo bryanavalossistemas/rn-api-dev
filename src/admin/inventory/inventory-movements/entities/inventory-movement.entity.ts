@@ -1,46 +1,34 @@
 import { Product } from '@/admin/inventory/products/entities/product.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { VoucherDetail } from '@/admin/transactions/voucher-details/entities/voucher-detail.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class InventoryMovement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar' })
-  documentType: 'Purchase' | 'Sale';
-
-  @Column({ type: 'integer' })
-  documentId: number;
-
-  @Column({ type: 'integer' })
-  detailId: number;
-
-  @Column({ type: 'integer' })
-  previousStock: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  previousCost: number;
-
-  @Column({ type: 'integer' })
-  lastStock: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  lastCost: number;
-
   @Column({ type: 'integer' })
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  unitPrice: number;
+  @Column({ type: 'varchar' })
+  movementType: 'IN' | 'OUT';
 
   @Column({ type: 'integer' })
   productId: number;
 
-  @ManyToOne(() => Product, (product) => product.inventoryMovements, {
-    onDelete: 'CASCADE',
-  })
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  unitCost: number;
+
+  @ManyToOne(() => Product, (product) => product.inventoryMovements)
   @JoinColumn({ name: 'productId' })
   product: Product;
+
+  @Column({ type: 'integer' })
+  voucherDetailId: number;
+
+  @OneToOne(() => VoucherDetail, (voucherDetail) => voucherDetail.inventoryMovement, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'voucherDetailId' })
+  voucherDetail: VoucherDetail;
 
   @CreateDateColumn()
   createdAt: Date;
