@@ -18,6 +18,7 @@ import { VouchersModule } from '@/admin/transactions/vouchers/vouchers.module';
 import { VoucherDetailsModule } from '@/admin/transactions/voucher-details/voucher-details.module';
 import { PurchasesModule } from '@/admin/transactions/purchases/purchases.module';
 import { SalesModule } from '@/admin/transactions/sales/sales.module';
+import { SunatModule } from './sunat/sunat.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { SalesModule } from '@/admin/transactions/sales/sales.module';
     VoucherDetailsModule,
     PurchasesModule,
     SalesModule,
+    SunatModule,
   ],
   providers: [
     // {
